@@ -4,7 +4,6 @@ import css from "./SearchForm.module.css"
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { MdOutlineImageSearch } from 'react-icons/md';
 
 
 
@@ -33,7 +32,6 @@ export class SearchForm extends Component {
    <header className={css.Searchbar}>
    <form className={css.SearchForm} onSubmit={this.handleSubmit}>
    <button type="submit" className={css.SearchForm_button}>
-                            <MdOutlineImageSearch />
     <span className={css.SearchForm_label}>Search</span>
     </button>
 

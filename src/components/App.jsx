@@ -6,7 +6,8 @@ import { LoaderSpinner } from 'components/LoaderSpinner/LoaderSpinner';
 import { LoadButton } from 'components/LoadButton/LoadButton';
 import { Modal } from 'components/Modal/Modal';
 import css from './App.module.css';
-import { ToastContainer } from 'react-toastify';   
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';   
 
 
 export class App extends Component {
@@ -39,25 +40,40 @@ export class App extends Component {
     
     }  
   }
+
    handleGetImages( query, page) {
     this.setState({ isLoading: true });
       getImages(query, page)
-      .then(({ hits, totalHits }) => {
+        .then(({ hits, totalHits }) => {
+          if (totalHits > page * 12) {
+        this.setState({ loadMore: true });
+          } else {
+             toast.info('You have seen all the pictures');
+        this.setState({ loadMore: false });
+      }
         if (!hits.length) {
           this.setState({
             isEmpty: true,
           });
           return;
-        }
+          }
         this.setState({
-          images: [...this.state.images, ...hits],
-          showLoadMore: this.state.page < Math.ceil(totalHits / 12),
+          images: [...this.state.images, ...this.normalaziedData(hits)],
+          LoadMore: this.state.page < Math.ceil(totalHits / 12),
         });
       })
       .catch(error => {
         this.setState({ error: `${error}` });
       })
       .finally(() => this.setState({ isLoading: false }));
+  }
+  normalaziedData(arr) {
+    return arr.map(({ id, tags, webformatURL, largeImageURL }) => ({
+      id,
+      tags,
+      webformatURL,
+      largeImageURL,
+    }));
   }
 
    handleFormSubmit = query => {
@@ -79,7 +95,7 @@ export class App extends Component {
     this.setState(({ isLoading }) => ({ isLoading: !isLoading }));
   };
   render() {
-    const { query, images, isLoading, showLoadMore,largeImageURL, showModal,isEmpty, error } = this.state;
+    const { query, images, isLoading, LoadMore,largeImageURL, showModal,isEmpty, error } = this.state;
     
     return (
       <>
@@ -99,7 +115,7 @@ export class App extends Component {
           toggleOnLoading={this.toggleOnLoading}
         />}
         {isLoading && <LoaderSpinner />}
-        {showLoadMore && <LoadButton onLoadMore={this.onLoadMore} />}
+        {LoadMore && !isLoading &&<LoadButton onLoadMore={this.onLoadMore} />}
          {showModal && (
           <Modal onClose={this.closeModal}
             onLoad={this.toggleOnLoading}
