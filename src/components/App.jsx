@@ -31,6 +31,7 @@ export class App extends Component {
       loadMore: false,
       isEmpty: false,
       error: '',
+      images: '',
     });
   }
  componentDidUpdate(_, prevState) {
