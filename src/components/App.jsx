@@ -100,7 +100,6 @@ export class App extends Component {
     
     return (
       <>
-        
         <ToastContainer autoClose={2000} />
         <SearchForm onSubmit={this.handleFormSubmit} value={query} />
          {isEmpty && (
